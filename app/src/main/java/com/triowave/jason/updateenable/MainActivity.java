@@ -15,7 +15,7 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    String jsonHttpURL = getString(R.string.update_json_address);
+
 
 
     @Override
@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
             if (checkBox.isChecked()) {
                 //Log.i(TAG, "updateStart: 自动检查更新打开，自动检查更新");
                 Toast.makeText(this, R.string.start_auto_update, Toast.LENGTH_SHORT).show();
+                String jsonHttpURL = getString(R.string.update_json_address);
                 UpdateAppUtils.checkAndUpdate(this, jsonHttpURL);
             }
         }
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void buttonOnClick(View view) {
         Toast.makeText(this, R.string.Mannual_update_toast, Toast.LENGTH_SHORT).show();
+        String jsonHttpURL = getString(R.string.update_json_address);
         UpdateAppUtils.checkAndUpdate(this, jsonHttpURL);
     }
 
