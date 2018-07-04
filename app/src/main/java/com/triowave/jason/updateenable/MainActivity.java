@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
         final CheckBox mCheckBox = findViewById(R.id.AutoUpateCheck);
         final SharedPreferences sharedPreferences = getSharedPreferences("autoUpdateCheck",MODE_PRIVATE);
-        mCheckBox.setChecked(sharedPreferences.getBoolean("autoUpdateCheckState",false));
+        mCheckBox.setChecked(sharedPreferences.getBoolean("autoUpdateCheckState",true));
 
 
         mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -44,8 +44,8 @@ public class MainActivity extends AppCompatActivity {
 
             CheckBox checkBox = findViewById(R.id.AutoUpateCheck);
             if (checkBox.isChecked()) {
-                Log.i(TAG, "updateStart: 自动检查更新打开，自动检查更新");
-                Toast.makeText(this, R.string.start_auto_update, Toast.LENGTH_LONG).show();
+                //Log.i(TAG, "updateStart: 自动检查更新打开，自动检查更新");
+                Toast.makeText(this, R.string.start_auto_update, Toast.LENGTH_SHORT).show();
                 String jsonHttpURL = getString(R.string.update_json_address);
                 UpdateAppUtils.checkAndUpdate(this, jsonHttpURL);
             }
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void buttonOnClick(View view) {
-        Toast.makeText(this, "开始检查更新", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "开始检查更新", Toast.LENGTH_SHORT).show();
         String jsonHttpURL = getString(R.string.update_json_address);
         UpdateAppUtils.checkAndUpdate(this, jsonHttpURL);
     }

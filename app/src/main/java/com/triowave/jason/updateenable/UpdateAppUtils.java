@@ -54,7 +54,7 @@ public class UpdateAppUtils{
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                Log.i(TAG, "checkAndUpdate: "+msg.obj);
+                //Log.i(TAG, "checkAndUpdate: "+msg.obj);
 
                 try {
                     jsonObject = new JSONObject((String) msg.obj);
@@ -64,21 +64,23 @@ public class UpdateAppUtils{
                     Server_ver_code = jsonObject.getInt("update_ver_code");
                     Server_update_ignoreable = jsonObject.getBoolean("ignore_able");
                     Server_update_md5 = jsonObject.getString("md5");
-                    Log.i("JSONObject fields",
-                            Server_ver_name +"\n"+Server_ver_code+"\n"+Server_update_content
-                                    +"\n"+Server_update_url+"\n"+Server_update_ignoreable+"\n"+Server_update_md5);
+                    //Log.i("JSONObject fields",
+                            //Server_ver_name +"\n"+Server_ver_code+"\n"+Server_update_content
+                                    //+"\n"+Server_update_url+"\n"+Server_update_ignoreable+"\n" +
+                           // ""+Server_update_md5);
 
                     if (Server_ver_code > getAPPLocalVersion(ctx)){
                         if (ContextCompat.checkSelfPermission(ctx,
                                 Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager
                                 .PERMISSION_GRANTED){
                             update(ctx);
-                            Log.i(TAG,"有新版本，开始下载");
+                            //Log.i(TAG,"有新版本，开始下载");
                         }
                         else{
                             ActivityCompat.requestPermissions((Activity) ctx,new String[]{Manifest
                                     .permission.WRITE_EXTERNAL_STORAGE},1);
-                            Log.i(TAG,"有新版本，申请权限");
+                            //Log.i(TAG,"有新版本，申请权限");
+                            update(ctx);
                         }
                     }
 
@@ -235,15 +237,15 @@ public class UpdateAppUtils{
             String rootPath = null;
             if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
                 rootPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-                Log.i(TAG, "DownloadApp: 找到储存位置，准备下载更新");
-                Toast.makeText(ctx, "找到储存位置，准备下载更新", Toast.LENGTH_LONG).show();
+                //Log.i(TAG, "DownloadApp: 找到储存位置，准备下载更新");
+                //Toast.makeText(ctx, "找到储存位置，准备下载更新", Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(ctx, "没有储存位置，无法下载更新", Toast.LENGTH_LONG).show();
+                Toast.makeText(ctx, "没有储存空间，无法下载更新", Toast.LENGTH_SHORT).show();
                 return;
             }
             downloadUpdateApkFilePath = rootPath + File.separator + titile +"_"+Server_ver_name +".apk";
 
-            Log.i(TAG, "DownloadApp: 找到储存位置，准备下载更新" + downloadUpdateApkFilePath);
+            //Log.i(TAG, "DownloadApp: 找到储存位置，准备下载更新" + downloadUpdateApkFilePath);
 
             deleteFile(downloadUpdateApkFilePath);
 

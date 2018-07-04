@@ -34,18 +34,22 @@ public class UpdateAppReceiver extends BroadcastReceiver {
                             downloadManager.remove(downloadId);
                         } else if (status == DownloadManager.STATUS_SUCCESSFUL) {
                             if (UpdateAppUtils.downloadUpdateApkFilePath != null) {
-                                Intent i = new Intent(Intent.ACTION_VIEW);
+                                File apkFile = new File(UpdateAppUtils.downloadUpdateApkFilePath);
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
-                                    i.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                                    Uri uri = FileProvider.getUriForFile(context,context.getPackageName()+"" +
-                                            ".fileprovider", new File("file://" + UpdateAppUtils
-                                            .downloadUpdateApkFilePath));
-                                }else {
-                                    i.setDataAndType(Uri.parse("file://" + UpdateAppUtils.downloadUpdateApkFilePath),
-                                            "application/vnd.android.package-archive");
+                                    Uri apkUri = FileProvider.getUriForFile(context, "com.triowave.jason.updateenable.fileprovider", apkFile);
+                                    Intent install = new Intent(Intent.ACTION_VIEW);
+                                    install.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                    install.setDataAndType(apkUri, "application/vnd.android.package-archive");
+                                    context.startActivity(install);
                                 }
-                                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                context.startActivity(i);
+                                else{
+                                    Intent i = new Intent(Intent.ACTION_VIEW);
+                                    i.setDataAndType(Uri.fromFile(apkFile),"application/vnd.android.package-archive");
+                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    context.startActivity(i);
+                                }
+
                             }
                         }
                     }
@@ -54,7 +58,7 @@ public class UpdateAppReceiver extends BroadcastReceiver {
         }catch (Exception e){
             e.printStackTrace();
         }finally {
-            if ( cursor != null){
+            if (cursor != null){
                 cursor.close();
             }
         }

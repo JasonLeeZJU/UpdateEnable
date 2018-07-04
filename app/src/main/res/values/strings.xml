@@ -5,4 +5,6 @@
     <string name="cancel">取消</string>
     <string name="sure">确认</string>
     <string name="AppName">FaceKAREPad</string>
+    <string name="CheckUpdateBtnLabel">检查更新</string>
+    <string name="AutoUpdateCBXLabel">自动更新</string>
 </resources>
