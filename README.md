@@ -34,5 +34,5 @@ Usage<br>
    (1)for auto-update <br>
     call function updateStart() in main activity just as shown in MainActivity in this project.<br>
    (2)for mannual-update <br>
-   call function updateStart() in callback function of designated components<br>
+   call function UpdateAppUtils.checkAndUpdate() in callback function of designated components<br>
    
