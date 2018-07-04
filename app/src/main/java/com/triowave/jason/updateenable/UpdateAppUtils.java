@@ -31,6 +31,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 
 import static android.content.ContentValues.TAG;
+import static android.content.Context.DOWNLOAD_SERVICE;
 
 public class UpdateAppUtils{
 
@@ -74,12 +75,12 @@ public class UpdateAppUtils{
                                 Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager
                                 .PERMISSION_GRANTED){
                             update(ctx);
-                            //Log.i(TAG,"有新版本，开始下载");
+                            Log.i(TAG,"有新版本，开始下载");
                         }
                         else{
                             ActivityCompat.requestPermissions((Activity) ctx,new String[]{Manifest
                                     .permission.WRITE_EXTERNAL_STORAGE},1);
-                            //Log.i(TAG,"有新版本，申请权限");
+                            Log.i(TAG,"有新版本，申请权限");
                             update(ctx);
                         }
                     }
@@ -223,35 +224,44 @@ public class UpdateAppUtils{
 
     private static void DownloadApp(Context ctx, String url, String titile) {
         if (TextUtils.isEmpty(url)) {
+            Log.i(TAG, "DownloadApp: 下载地址为空");
             return;
         }
         try {
-            DownloadManager downloadManager = (DownloadManager) ctx.getSystemService(Context
-                    .DOWNLOAD_SERVICE);
-            Uri uri = Uri.parse(url);
-            DownloadManager.Request request = new DownloadManager.Request(uri);
+            Log.i(TAG, "DownloadApp: 下载地址不为空");
 
-            request.setVisibleInDownloadsUi(true);
-            request.setTitle(titile);
+        DownloadManager downloadManager = (DownloadManager) ctx.getSystemService(DOWNLOAD_SERVICE);
+        Uri uri = Uri.parse(url);
+        DownloadManager.Request request = new DownloadManager.Request(uri);
+        request.setAllowedOverRoaming(false);
 
-            String rootPath = null;
+        String rootPath = null;
             if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
                 rootPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-                //Log.i(TAG, "DownloadApp: 找到储存位置，准备下载更新");
+                //Log.i(TAG, "DownloadApp: 找到储存位置，准备下载更新" + rootPath);
                 //Toast.makeText(ctx, "找到储存位置，准备下载更新", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(ctx, "没有储存空间，无法下载更新", Toast.LENGTH_SHORT).show();
                 return;
             }
-            downloadUpdateApkFilePath = rootPath + File.separator + titile +"_"+Server_ver_name +".apk";
 
-            //Log.i(TAG, "DownloadApp: 找到储存位置，准备下载更新" + downloadUpdateApkFilePath);
+        downloadUpdateApkFilePath = rootPath + File.separator + titile +"_"+Server_ver_name +".apk";
+        Uri fileUri = Uri.parse("file://" + downloadUpdateApkFilePath);
 
-            deleteFile(downloadUpdateApkFilePath);
+        deleteFile(downloadUpdateApkFilePath);
 
-            Uri fileUri = Uri.parse("file://" + downloadUpdateApkFilePath);
-            request.setDestinationUri(fileUri);
-            downloadUpdateApkId = downloadManager.enqueue(request);
+        request.setDestinationUri(fileUri);
+        downloadUpdateApkId = downloadManager.enqueue(request);
+
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
+        request.setMimeType("application/vnd.android.package-archive");
+
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setTitle(titile);
+        request.setDescription("正在下载中...");
+        request.setVisibleInDownloadsUi(true);
+
+
         }catch (Exception e){
             e.printStackTrace();
         }

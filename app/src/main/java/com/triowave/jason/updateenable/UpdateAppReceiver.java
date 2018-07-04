@@ -33,24 +33,11 @@ public class UpdateAppReceiver extends BroadcastReceiver {
                         if (status == DownloadManager.STATUS_FAILED) {
                             downloadManager.remove(downloadId);
                         } else if (status == DownloadManager.STATUS_SUCCESSFUL) {
-                            if (UpdateAppUtils.downloadUpdateApkFilePath != null) {
-                                File apkFile = new File(UpdateAppUtils.downloadUpdateApkFilePath);
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
-                                    Uri apkUri = FileProvider.getUriForFile(context, "com.triowave.jason.updateenable.fileprovider", apkFile);
-                                    Intent install = new Intent(Intent.ACTION_VIEW);
-                                    install.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                                    install.setDataAndType(apkUri, "application/vnd.android.package-archive");
-                                    context.startActivity(install);
-                                }
-                                else{
-                                    Intent i = new Intent(Intent.ACTION_VIEW);
-                                    i.setDataAndType(Uri.fromFile(apkFile),"application/vnd.android.package-archive");
-                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    context.startActivity(i);
-                                }
 
+                            if (UpdateAppUtils.downloadUpdateApkFilePath != null) {
+                                install(context,UpdateAppUtils.downloadUpdateApkFilePath);
                             }
+
                         }
                     }
                 }
@@ -61,6 +48,24 @@ public class UpdateAppReceiver extends BroadcastReceiver {
             if (cursor != null){
                 cursor.close();
             }
+        }
+    }
+
+    private void install(Context context,String apkPath){
+        File apkFile = new File(apkPath);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+            Uri apkUri = FileProvider.getUriForFile(context, "com.triowave.jason.updateenable.fileprovider", apkFile);
+            Intent install = new Intent(Intent.ACTION_VIEW);
+            install.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            install.setDataAndType(apkUri, "application/vnd.android.package-archive");
+            context.startActivity(install);
+        }
+        else{
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setDataAndType(Uri.fromFile(apkFile),"application/vnd.android.package-archive");
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(i);
         }
     }
 }

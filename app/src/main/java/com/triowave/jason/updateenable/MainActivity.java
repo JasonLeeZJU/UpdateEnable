@@ -1,5 +1,8 @@
 package com.triowave.jason.updateenable;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +15,7 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    private long downloadId;
 
 
     @Override
@@ -23,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
         final SharedPreferences sharedPreferences = getSharedPreferences("autoUpdateCheck",MODE_PRIVATE);
         mCheckBox.setChecked(sharedPreferences.getBoolean("autoUpdateCheckState",true));
 
-
         mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -34,14 +37,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         updateStart();
-
-
-
    }
-    private void updateStart() {
 
+   private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+       @Override
+       public void onReceive(Context context, Intent intent) {
+           Log.i(TAG, "onReceive: 接收到结束");
+       }
+   };
+
+
+    private void updateStart() {
             CheckBox checkBox = findViewById(R.id.AutoUpateCheck);
             if (checkBox.isChecked()) {
                 //Log.i(TAG, "updateStart: 自动检查更新打开，自动检查更新");
@@ -57,4 +64,5 @@ public class MainActivity extends AppCompatActivity {
         String jsonHttpURL = getString(R.string.update_json_address);
         UpdateAppUtils.checkAndUpdate(this, jsonHttpURL);
     }
+
 }
